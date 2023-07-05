@@ -10,7 +10,8 @@ import os
 print(os.path.abspath(__file__))
 print(os.path.split(os.path.abspath(__file__)))
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-data_path = os.path.join(file_dir, "Bike-Sharing-Dataset/hour.csv")
+data_path = os.path.join(file_dir,'../', "Bike-Sharing-Dataset/hour.csv")
+
 
 #读取数据到内存中，rides为一个dataframe对象
 rides = pd.read_csv(data_path)
@@ -53,7 +54,8 @@ for each in quant_features:
 # c. 将数据集进行分割
 
 # 将所有的数据集分为测试集和训练集，我们以后21天数据一共21*24个数据点作为测试集，其它是训练集
-test_data = data[-21*24:]
+test_data:pd.DataFrame = data[-21*24:]
+print(test_data.shape[0])
 train_data = data[:-21*24]
 print('训练数据：',len(train_data),'测试数据：',len(test_data))
 
@@ -71,8 +73,11 @@ print('X:')
 print(X)
 Y = targets['cnt'].values
 Y = Y.astype(float)
-
+# Y是一个一维数组
+print(Y)
+# 将它变成2维，和X同结构
 Y = np.reshape(Y, [len(Y),1])
+print(Y)
 losses = []
 
 print(features.head())
@@ -129,11 +134,14 @@ targets = test_targets['cnt'] #读取测试集的cnt数值
 targets = targets.values.reshape([len(targets),1]) #将数据转换成合适的tensor形式
 targets = targets.astype(float) #保证数据为实数
 
+# 测试样本的x
 x = torch.tensor(test_features.values, dtype = torch.float, requires_grad = True)
+# 测试样本的y
 y = torch.tensor(targets, dtype = torch.float, requires_grad = True)
 
 print(x[:10])
 # 用神经网络进行预测
+# 预测得到的y
 predict = neu(x)
 predict = predict.data.numpy()
 

@@ -8,6 +8,7 @@ data_path = "./liner-data1.csv"
 csv_datas = pd.read_csv(data_path)
 csv_x = csv_datas['x']
 csv_y = csv_datas['y']
+print(type(csv_x))
 
 # 绘制一个图形，展示曲线长的样子
 plt.figure(figsize = (10, 7)) #设定绘图窗口大小
