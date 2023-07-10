@@ -100,3 +100,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+anders-test/basics/model_weights.pth
