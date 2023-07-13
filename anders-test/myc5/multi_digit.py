@@ -1,5 +1,10 @@
 # 原文链接：https://blog.csdn.net/ITnanbei/article/details/118639874
-# 目前还跑不通
+# 缺一些代码，跑不通
+# 这个程序可以识别图片上的两个数字，并且可以识别出两个数字的坐标
+# 做法就是做了一堆两个数字的图片，进行训练。
+# 感觉有点不切实际
+# 如果又3个数字，n个数字，那不是要重新训练啊
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -36,15 +41,21 @@ train_loader = DataLoader(train_set, shuffle=True)
 test_loader = DataLoader(test_set, shuffle=True)
 
 """ 制作训练集数据和标签"""
+# number_x_train放的图片，每个图片由两个数字组成，共30000条数据
 number_x_train = np.zeros((30000, 1, 100, 100), dtype="float64")
+# 图片中两个数字对应的坐标
 coordinate_y_train = np.zeros((30000, 1, 4), dtype="float64")
+# 图片中两个数字，独热编码
 number_y_train = np.zeros((30000, 1, 20), dtype="float64")
  
 j = 0
 for i, (data, label) in enumerate(train_loader):
+    print(data.shape)
     data = data.squeeze(axis=0)
     data = data.squeeze(axis=0)
+    print(data.shape)
     data = np.array(data)
+    # 在周围加了圈黑边
     data[0, :], data[27, :], data[:, 0], data[:, 27] = 1, 1, 1, 1
     if i % 2 == 0:
         """背景板"""
@@ -80,7 +91,7 @@ number_X_train = torch.from_numpy(number_x_train).float()
 coordinate_Y_train = torch.from_numpy(coordinate_y_train).float()
 number_Y_train = torch.from_numpy(number_y_train).float()
  
- 
+# TensorDataset没用过
 train_data = TensorDataset(number_X_train, number_Y_train)
 train_loader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -95,6 +106,7 @@ class Multi_Digit(nn.Module):
         self.fc2 = nn.Linear(500, 20)  # 500:输入通道 20:输出通道
  
     def forward(self, x):  #  x 为  batch size *1 *100 *100   
+        print(x.shape)
         input_size = x.size(0)  # batch size
         x = self.conv1(x)  # 卷积   输入：batch *1 *100 *100 ,输出 ： batch*10*50*50
         x = F.relu(x)  # 激活函数 输出 ： batch*10*46*46
@@ -164,7 +176,7 @@ def test_model(model, device, test_loader):
 #
 for epoch in range(1, EPOCHS + 1):
     train_model(model, DEVICE, train_loader, optimizer, epoch)
-    test_model(model, DEVICE, test_loader)
+    # test_model(model, DEVICE, test_loader)
 
 
 """定位模型"""
