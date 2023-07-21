@@ -195,7 +195,7 @@ for epoch in range(num_epochs):
         #这种区分主要是为了打开关闭net的training标志，从而决定是否运行dropout
         net.train() 
                     
-            
+        print(data.shape)
         output = net(data) #神经网络完成一次前馈的计算过程，得到预测输出output
         # print(output.shape) #[64,10]
         # output里面放的是每个图片对应的数组，数组10个元素，值为数字（不是概率）

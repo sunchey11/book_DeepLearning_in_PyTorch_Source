@@ -101,3 +101,7 @@ ENV/
 # mypy
 .mypy_cache/
 anders-test/basics/model_weights.pth
+dataset/data_5_10000.npy
+dataset/labels_5_10000.npy
+anders-test/PyTorch_CRNN_Seq2Seq/dataset/data_5_10000.npy
+anders-test/PyTorch_CRNN_Seq2Seq/dataset/labels_5_10000.npy
