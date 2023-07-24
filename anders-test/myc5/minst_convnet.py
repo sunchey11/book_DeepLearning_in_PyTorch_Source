@@ -82,6 +82,9 @@ class ConvNet(nn.Module):
         # 首先调用父类相应的构造函数
         super(ConvNet, self).__init__()
         
+        # Conv2d的用法，我在笔记上
+        # 05_Convolution/手写数字识别器_minst_convnet.ipynb
+        # 写了注释
         # 其次构造ConvNet需要用到的各个神经模块。
         '''注意，定义组件并没有真正搭建这些组件，只是把基本建筑砖块先找好'''
         #定义一个卷积层，输入通道为1，输出通道为4，窗口大小为5，padding为2

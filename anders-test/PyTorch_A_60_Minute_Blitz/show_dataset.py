@@ -29,10 +29,10 @@ classes = ('plane', 'car', 'bird', 'cat',
 def imshow(img):
     img = img / 2 + 0.5     # unnormalize
     npimg = img.numpy()
-    print(npimg.shape)
+    print(npimg.shape) #3, 36, 138
     # 轴变换 
     npimg = np.transpose(npimg, (1, 2, 0))
-    print(npimg.shape)
+    print(npimg.shape) #(36, 138, 3)
     plt.imshow(npimg)
     plt.show()
 

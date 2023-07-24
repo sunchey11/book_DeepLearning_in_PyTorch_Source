@@ -1,3 +1,4 @@
+# model如何进行构建的，数据如何计算的。不包含训练的代码
 import os
 import torch
 from torch import nn

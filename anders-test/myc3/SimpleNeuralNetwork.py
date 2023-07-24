@@ -135,6 +135,9 @@ class SimpleNeuralNetwork:
                 xx = torch.tensor(X[start:end], dtype = torch.float, requires_grad = True)
                 yy = torch.tensor(Y[start:end], dtype = torch.float, requires_grad = True)
                 predict = neu(xx)
+                # predict.shape=[128,1]
+                # yy.shape=[128,1]
+                # 两个参数结构一样
                 loss = cost(predict, yy)
                 optimizer.zero_grad()
                 loss.backward()
