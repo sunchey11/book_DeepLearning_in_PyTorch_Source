@@ -43,6 +43,7 @@ for i in range(1, cols * rows + 1):
     # squeeze去掉维度为1的维度,本来shape=[1,32,32]
     # 调用后变为[32,32]
     img = img.squeeze()
+    print(img)
     print(img.shape)
     plt.imshow(img, cmap="gray")
 plt.show()

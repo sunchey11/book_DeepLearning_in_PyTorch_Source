@@ -52,6 +52,7 @@ print(images.shape)
 # 将多个图片，合成为一个网格图片
 x = torchvision.utils.make_grid(images)
 print(x.shape)
+print(x)
 imshow(x)
 # print labels
 print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
