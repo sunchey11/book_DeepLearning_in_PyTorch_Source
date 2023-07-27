@@ -1,7 +1,7 @@
 # 测试模型,准确率在xx
 
 
-
+import time
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -14,12 +14,10 @@ print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test2'),
+test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test'),
                                      transforms.Compose([
-                                        
                                         transforms.Resize((img_height,img_width)),
                                         transforms.ToTensor(),
-                                        
                                     ])
                                     )
 t1 = test_dataset[0]
@@ -76,7 +74,7 @@ imshow(torchvision.utils.make_grid(images))
 print('GroundTruth: ', ' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './pkg_iden2.pth')
+PATH = os.path.join(file_dir, './pkg_iden.pth')
 
 net = PkgIdenNet()
 net.load_state_dict(torch.load(PATH))
@@ -112,7 +110,12 @@ with torch.no_grad():
     for data in testloader:
         images, labels = data
         # calculate outputs by running images through the network
+        start=time.time()
         outputs = net(images)
+        end=time.time()
+        # 时间为0.05秒左右
+        print('程序运行时间为: %s Seconds'%(end-start))
+
         # the class with the highest energy is what we choose as prediction
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)

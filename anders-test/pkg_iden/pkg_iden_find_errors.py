@@ -2,7 +2,7 @@
 
 
 
-
+import time
 import PIL
 import torch
 import torchvision
@@ -99,7 +99,14 @@ with torch.no_grad():
         # 将整数变成一个单元素数组
         labels = torch.tensor([labels])
         # calculate outputs by running images through the network
+
+        
+        start=time.time()
+ 
         outputs = net(images)
+        end=time.time()
+        # 时间为0.05秒
+        print('程序运行时间为: %s Seconds'%(end-start))
         
         # print(outputs.shape) 
         # print(outputs)

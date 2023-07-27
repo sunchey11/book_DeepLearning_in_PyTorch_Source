@@ -14,7 +14,7 @@ print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train2'),
+train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
                                      transforms.Compose([
                                         
                                         transforms.Resize((img_height,img_width)),
@@ -72,7 +72,6 @@ print('Finished Training')
 print(train_dataset.classes)
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-# PATH = os.path.join(file_dir, './pkg_iden.pth')
-PATH = os.path.join(file_dir, './pkg_iden2.pth')
+PATH = os.path.join(file_dir, './pkg_iden.pth')
 
 torch.save(net.state_dict(), PATH)
