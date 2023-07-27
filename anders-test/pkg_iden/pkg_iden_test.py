@@ -14,7 +14,7 @@ print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test'),
+test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test2'),
                                      transforms.Compose([
                                         
                                         transforms.Resize((img_height,img_width)),
@@ -22,6 +22,19 @@ test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test'),
                                         
                                     ])
                                     )
+t1 = test_dataset[0]
+
+print(len(t1))
+print(t1[0]) #这是图片数据
+print(t1[1]) #这是一个整数，即label的index
+
+# 所有的文件
+print(type(test_dataset.imgs))
+print(len(test_dataset.imgs))
+print(type(test_dataset.imgs[0]))
+print(test_dataset.imgs[5])
+
+
 batch_size = 1
 testloader = torch.utils.data.DataLoader(test_dataset, batch_size = batch_size, shuffle = False, num_workers=0)
 print(test_dataset.classes)
@@ -63,20 +76,31 @@ imshow(torchvision.utils.make_grid(images))
 print('GroundTruth: ', ' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './pkg_iden.pth')
+PATH = os.path.join(file_dir, './pkg_iden2.pth')
 
 net = PkgIdenNet()
 net.load_state_dict(torch.load(PATH))
 
 outputs = net(images)
 print(outputs.shape) # torch.Size([4, 10])
+print(outputs)
+# 将数据转为0到1之间的概率，总和为1
+softmax = nn.Softmax(dim=1)
+
+outputs = softmax(outputs)
+print(outputs)
+print(outputs[0].sum())
+
 
 _, predicted = torch.max(outputs, 1)
+
 print(type(_))
 print(_.shape)
+# _里面放的是概率，如果能预测，则概率>0.99
+# 如果不能预测，则概率是0.6779
 print(_)
 print(predicted.shape)
-
+print(predicted)
 print('Predicted: ', ' '.join(f'{classes[predicted[j]]:5s}'
                               for j in range(batch_size)))
 

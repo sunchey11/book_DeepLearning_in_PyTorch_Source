@@ -1,3 +1,4 @@
+# 笔记在 anders-test/my-transforms-study
 """
 ==========================
 Illustration of transforms
@@ -69,10 +70,10 @@ def plot(imgs, with_orig=True, row_title=None, **imshow_kwargs):
 # The :class:`~torchvision.transforms.Pad` transform
 # (see also :func:`~torchvision.transforms.functional.pad`)
 # fills image borders with some pixel values.
-padded_imgs = [T.Pad(padding=padding)(orig_img) for padding in (3, 10, 30, 50)]
-print(type(padded_imgs))
-print(type(padded_imgs[0]))
-plot(padded_imgs)
+# padded_imgs = [T.Pad(padding=padding)(orig_img) for padding in (3, 10, 30, 50)]
+# print(type(padded_imgs))
+# print(type(padded_imgs[0]))
+# plot(padded_imgs)
 
 ####################################
 # Resize
@@ -80,8 +81,8 @@ plot(padded_imgs)
 # The :class:`~torchvision.transforms.Resize` transform
 # (see also :func:`~torchvision.transforms.functional.resize`)
 # resizes an image.
-resized_imgs = [T.Resize(size=size)(orig_img) for size in (30, 50, 100, orig_img.size)]
-plot(resized_imgs)
+# resized_imgs = [T.Resize(size=size)(orig_img) for size in ((30,60), 50, 100, orig_img.size)]
+# plot(resized_imgs)
 
 ####################################
 # CenterCrop
@@ -89,8 +90,8 @@ plot(resized_imgs)
 # The :class:`~torchvision.transforms.CenterCrop` transform
 # (see also :func:`~torchvision.transforms.functional.center_crop`)
 # crops the given image at the center.
-center_crops = [T.CenterCrop(size=size)(orig_img) for size in (30, 50, 100, orig_img.size)]
-plot(center_crops)
+# center_crops = [T.CenterCrop(size=size)(orig_img) for size in (30, 50, 100, orig_img.size)]
+# plot(center_crops)
 
 ####################################
 # FiveCrop
@@ -98,8 +99,8 @@ plot(center_crops)
 # The :class:`~torchvision.transforms.FiveCrop` transform
 # (see also :func:`~torchvision.transforms.functional.five_crop`)
 # crops the given image into four corners and the central crop.
-(top_left, top_right, bottom_left, bottom_right, center) = T.FiveCrop(size=(100, 100))(orig_img)
-plot([top_left, top_right, bottom_left, bottom_right, center])
+# (top_left, top_right, bottom_left, bottom_right, center) = T.FiveCrop(size=(100, 100))(orig_img)
+# plot([top_left, top_right, bottom_left, bottom_right, center])
 
 ####################################
 # Grayscale
@@ -107,8 +108,8 @@ plot([top_left, top_right, bottom_left, bottom_right, center])
 # The :class:`~torchvision.transforms.Grayscale` transform
 # (see also :func:`~torchvision.transforms.functional.to_grayscale`)
 # converts an image to grayscale
-gray_img = T.Grayscale()(orig_img)
-plot([gray_img], cmap='gray')
+# gray_img = T.Grayscale()(orig_img)
+# plot([gray_img], cmap='gray')
 
 ####################################
 # Random transforms
@@ -120,9 +121,9 @@ plot([gray_img], cmap='gray')
 # ~~~~~~~~~~~
 # The :class:`~torchvision.transforms.ColorJitter` transform
 # randomly changes the brightness, saturation, and other properties of an image.
-jitter = T.ColorJitter(brightness=.5, hue=.3)
-jitted_imgs = [jitter(orig_img) for _ in range(4)]
-plot(jitted_imgs)
+# jitter = T.ColorJitter(brightness=.5, hue=.3)
+# jitted_imgs = [jitter(orig_img) for _ in range(4)]
+# plot(jitted_imgs)
 
 ####################################
 # GaussianBlur
@@ -130,9 +131,9 @@ plot(jitted_imgs)
 # The :class:`~torchvision.transforms.GaussianBlur` transform
 # (see also :func:`~torchvision.transforms.functional.gaussian_blur`)
 # performs gaussian blur transform on an image.
-blurrer = T.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5))
-blurred_imgs = [blurrer(orig_img) for _ in range(4)]
-plot(blurred_imgs)
+# blurrer = T.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 5))
+# blurred_imgs = [blurrer(orig_img) for _ in range(4)]
+# plot(blurred_imgs)
 
 ####################################
 # RandomPerspective
@@ -140,9 +141,9 @@ plot(blurred_imgs)
 # The :class:`~torchvision.transforms.RandomPerspective` transform
 # (see also :func:`~torchvision.transforms.functional.perspective`)
 # performs random perspective transform on an image.
-perspective_transformer = T.RandomPerspective(distortion_scale=0.6, p=1.0)
-perspective_imgs = [perspective_transformer(orig_img) for _ in range(4)]
-plot(perspective_imgs)
+# perspective_transformer = T.RandomPerspective(distortion_scale=0.6, p=1.0)
+# perspective_imgs = [perspective_transformer(orig_img) for _ in range(4)]
+# plot(perspective_imgs)
 
 ####################################
 # RandomRotation
@@ -150,9 +151,9 @@ plot(perspective_imgs)
 # The :class:`~torchvision.transforms.RandomRotation` transform
 # (see also :func:`~torchvision.transforms.functional.rotate`)
 # rotates an image with random angle.
-rotater = T.RandomRotation(degrees=(0, 180))
-rotated_imgs = [rotater(orig_img) for _ in range(4)]
-plot(rotated_imgs)
+# rotater = T.RandomRotation(degrees=(0, 180))
+# rotated_imgs = [rotater(orig_img) for _ in range(4)]
+# plot(rotated_imgs)
 
 ####################################
 # RandomAffine
@@ -160,9 +161,9 @@ plot(rotated_imgs)
 # The :class:`~torchvision.transforms.RandomAffine` transform
 # (see also :func:`~torchvision.transforms.functional.affine`)
 # performs random affine transform on an image.
-affine_transfomer = T.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75))
-affine_imgs = [affine_transfomer(orig_img) for _ in range(4)]
-plot(affine_imgs)
+# affine_transfomer = T.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75))
+# affine_imgs = [affine_transfomer(orig_img) for _ in range(4)]
+# plot(affine_imgs)
 
 ####################################
 # ElasticTransform

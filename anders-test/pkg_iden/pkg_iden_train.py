@@ -14,7 +14,7 @@ print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
+train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train2'),
                                      transforms.Compose([
                                         
                                         transforms.Resize((img_height,img_width)),
@@ -28,7 +28,6 @@ print(train_dataset.classes)
 
 
 import torch.nn as nn
-debug = False
 
 
 net = PkgIdenNet()
@@ -48,7 +47,9 @@ for epoch in range(160):  # loop over the dataset multiple times
         inputs, labels = data
         d_print(inputs.shape) # torch.Size([1, 3, 600, 800])
         d_print(labels.shape) # torch.Size([1])
-
+        # label是个数字
+        d_print(type(labels[0]))
+        d_print(labels[0].item())
         # zero the parameter gradients
         optimizer.zero_grad()
 
@@ -71,6 +72,7 @@ print('Finished Training')
 print(train_dataset.classes)
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './pkg_iden.pth')
+# PATH = os.path.join(file_dir, './pkg_iden.pth')
+PATH = os.path.join(file_dir, './pkg_iden2.pth')
 
 torch.save(net.state_dict(), PATH)

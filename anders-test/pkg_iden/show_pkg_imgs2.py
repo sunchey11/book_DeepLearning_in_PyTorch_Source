@@ -1,4 +1,4 @@
-# 显示目录下的图片
+# 显示目录下的图片,transform是个函数
 import torch
 from torch.utils.data import Dataset
 
