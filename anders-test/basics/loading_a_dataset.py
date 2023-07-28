@@ -39,11 +39,11 @@ for i in range(1, cols * rows + 1):
     figure.add_subplot(rows, cols, i)
     plt.title(labels_map[label])
     plt.axis("off")
-    print(img.shape)
+    # print(img.shape)
     # squeeze去掉维度为1的维度,本来shape=[1,32,32]
     # 调用后变为[32,32]
     img = img.squeeze()
-    print(img)
-    print(img.shape)
+    # print(img)
+    # print(img.shape)
     plt.imshow(img, cmap="gray")
 plt.show()
