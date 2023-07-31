@@ -1,11 +1,12 @@
 # 识别汉字的类
-
+# 根据下面的文章，调整参数
+# https://www.freesion.com/article/3546966097/
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-img_width = 128
-img_height = 128
+img_width = 64
+img_height = 64
 debug = False
 def d_print(s):
     if(debug):
@@ -63,4 +64,5 @@ class FontIdenNet(nn.Module):
         x = F.relu(x)
         d_print(x.shape) # torch.Size([4, 120])
 
+       
         return x
