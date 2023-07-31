@@ -1,6 +1,6 @@
 # 训练
 # 识别药品包装，数据在data目录下
-from FontIdenNet import FontIdenNet,img_height,img_width,d_print
+from FontIdenNet3755 import FontIdenNet,img_height,img_width,d_print
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -13,7 +13,7 @@ chinese_path = "D:\\pytorch_data\\font_to_png"
 
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-train_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'train_gbk'),
+train_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'train_3755'),
                                      transforms.Compose([
                                         
                                         transforms.Resize((img_height,img_width)),
@@ -34,7 +34,7 @@ print(device)
 net = FontIdenNet()
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './font_iden_gbk.pth')
+PATH = os.path.join(file_dir, './font_iden_3755.pth')
 if os.path.exists(PATH):
     net.load_state_dict(torch.load(PATH))
 net = net.to(device)
