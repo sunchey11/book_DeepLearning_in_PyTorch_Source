@@ -12,12 +12,21 @@ from FontIdenNet import d_print,FontIdenNet,img_width,img_height
 chinese_path = "D:\\pytorch_data\\font_to_png"
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-test_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'test20'),
+test_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'test_gbk'),
                                      transforms.Compose([
                                         transforms.Resize((img_height,img_width)),
                                         transforms.ToTensor(),
                                     ])
                                     )
+train_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'train_gbk'),
+                                     transforms.Compose([
+                                        
+                                        transforms.Resize((img_height,img_width)),
+                                        transforms.ToTensor(),
+                                        
+                                    ])
+                                    )
+
 t1 = test_dataset[0]
 
 print(len(t1))
@@ -28,7 +37,6 @@ print(t1[1]) #这是一个整数，即label的index
 print(type(test_dataset.imgs))
 print(len(test_dataset.imgs))
 print(type(test_dataset.imgs[0]))
-print(test_dataset.imgs[5])
 
 
 batch_size = 1
@@ -36,7 +44,7 @@ testloader = torch.utils.data.DataLoader(test_dataset, batch_size = batch_size, 
 print(test_dataset.classes)
 
 # ['39', '620', 'aoli', 'eber', 'fengshi', 'kouzhao', 'kushen', 'lianhua', 'ningjiao', 'nut', 'shangtong', 'yikang', 'zhuangyao', 'zhuodu']
-classes = test_dataset.classes
+classes = train_dataset.classes
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -72,12 +80,18 @@ imshow(torchvision.utils.make_grid(images))
 print('GroundTruth: ', ' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './font_iden.pth')
+PATH = os.path.join(file_dir, './font_iden_gbk.pth')
 
 net = FontIdenNet()
 net.load_state_dict(torch.load(PATH))
 
+
+start=time.time()
 outputs = net(images)
+end=time.time()
+# 时间为0.05秒左右
+print('程序运行时间为: %s Seconds'%(end-start))
+
 print(outputs.shape) # torch.Size([4, 10])
 print(outputs)
 # 将数据转为0到1之间的概率，总和为1
@@ -112,7 +126,7 @@ with torch.no_grad():
         outputs = net(images)
         end=time.time()
         # 时间为0.05秒左右
-        print('程序运行时间为: %s Seconds'%(end-start))
+        # print('程序运行时间为: %s Seconds'%(end-start))
 
         # the class with the highest energy is what we choose as prediction
         _, predicted = torch.max(outputs.data, 1)

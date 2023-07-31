@@ -5,9 +5,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-img_width = 64
-img_height = 64
-debug = True
+img_width = 128
+img_height = 128
+debug = False
 def d_print(s):
     if(debug):
         print(s)
