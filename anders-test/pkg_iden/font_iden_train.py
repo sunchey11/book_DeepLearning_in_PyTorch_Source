@@ -11,8 +11,9 @@ from torchvision import datasets, models, transforms
 
 chinese_path = "D:\\pytorch_data\\font_to_png"
 
+
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-train_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'train20'),
+train_dataset = datasets.ImageFolder(os.path.join(chinese_path, 'train_gbk'),
                                      transforms.Compose([
                                         
                                         transforms.Resize((img_height,img_width)),
@@ -31,6 +32,11 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 # Assuming that we are on a CUDA machine, this should print a CUDA device:
 print(device)
 net = FontIdenNet()
+
+file_dir = os.path.split(os.path.abspath(__file__))[0]
+PATH = os.path.join(file_dir, './font_iden_gbk.pth')
+if os.path.exists(PATH):
+    net.load_state_dict(torch.load(PATH))
 net = net.to(device)
 import torch.optim as optim
 import time
@@ -74,8 +80,8 @@ for epoch in range(100):  # loop over the dataset multiple times
         
 
         if i % 100 == 0:    # print every 2000 mini-batches
-            print(f'[{i}] loss: {running_loss / total:.3f}')
-            print('aba',i,'loss:',li)
+            print(f'[{i}] avg loss: {running_loss / total:.3f}')
+            print('shot',i,'loss:',li)
             running_loss = 0.0
             total = 0
 
@@ -86,17 +92,24 @@ end=time.time()
 # 时间为batch size = 1,cpu 10次516秒左右
 # 时间为batch size = 10,cpu 10次81秒左右
 # 时间为batch size = 10,gpu 10次40秒左右
-# 时间为batch size = 10,gpu 100次380秒左右,loss到可用范围
+# 时间为batch size = 10,gpu 100次380秒左右,loss到可用范围,asul 68s
 # 时间为batch size = 100,gpu 100次142秒左右,但是loss不正常
 
 # 2500个汉字
 # 时间为batch size = 10,gpu 两小时干了10次，没干完，干完100次得20小时
+
+# gbk 6000多汉字，batch size = 100,gpu 100次6446秒,8823秒
+# [600] loss: 3.297
+# aba 600 loss: 2.763105869293213
+# 99 loss: 7.163599014282227
+
+# [600] avg loss: 3.297
+# shot 600 loss: 2.763104200363159
+# 99 loss: 7.163599014282227
 print('程序运行时间为: %s Seconds'%(end-start))
 
 print('Finished Training')
 print(train_dataset.classes)
 
-file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './font_iden.pth')
 
 torch.save(net.state_dict(), PATH)

@@ -4,8 +4,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-img_width = 300
-img_height = 300
+img_width = 128
+img_height = 128
 debug = False
 def d_print(s):
     if(debug):
@@ -16,7 +16,7 @@ class FontIdenNet(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 6, 11, padding=5)
 
-        pool_size = 5
+        pool_size = 2
         self.pool1 = nn.MaxPool2d(pool_size, pool_size)
         
         self.conv2 = nn.Conv2d(6, 16, 11, padding=5)
@@ -26,12 +26,11 @@ class FontIdenNet(nn.Module):
         # 16*24*32=12280
         w = img_width/pool_size/pool_size #150
         h = img_height/pool_size/pool_size #150
-        # 2304
+        # 16384
         pix = 16*w*h
         # print(type(pix))
-        self.fc1 = nn.Linear(int(pix), 2500)
-        self.fc2 = nn.Linear(2500, 10000)
-        self.fc3 = nn.Linear(10000, 25000)
+        self.fc1 = nn.Linear(int(pix), 12000)
+        self.fc2 = nn.Linear(12000, 10000)
 
     def forward(self, x):
         d_print(x.shape) # torch.Size([1, 3, 600, 800])
@@ -66,11 +65,6 @@ class FontIdenNet(nn.Module):
         d_print(x.shape) # torch.Size([4, 120])
 
         x = self.fc2(x)
-        d_print(x.shape) # torch.Size([4, 84])
-        x = F.relu(x)
-        d_print(x.shape) # torch.Size([4, 84])
-
-        x = self.fc3(x)
         d_print(x.shape) # torch.Size([4, 84])
         x = F.relu(x)
         d_print(x.shape) # torch.Size([4, 84])
