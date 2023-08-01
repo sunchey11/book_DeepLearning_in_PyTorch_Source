@@ -1,4 +1,5 @@
-# 测试模型,找出不能正确识别的图片
+# 测试模型,找出不能正确识别的图片,
+# 将不能识别的图片保存到D:\GitHub\book_DeepLearning_in_PyTorch_Source\anders-test\pkg_iden\data\test2_errors\dangshen-targets
 
 
 
@@ -9,16 +10,38 @@ import torchvision
 import torchvision.transforms as transforms
 import os
 from torchvision import datasets, models, transforms
-from PkgIdenNet import d_print,PkgIdenNet,img_width,img_height
+from PkgIdenNetC5 import d_print,PkgIdenNet,img_width,img_height
+from PIL import Image
+from rembg import remove,new_session
 
 file_dir = os.path.split(__file__)[0]
 print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 
+session = new_session("u2netp")
+def remove_bg(img):
+    print(type(img))
+    print(img.mode)
+    img = remove(img, session=session)
+    print(type(img))
+    print(img.mode)
+    img = img.convert("RGB")
+    print(type(img))
+    print(img.mode)
+    return img
+
+train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
+                                     transforms.Compose([
+                                        
+                                        transforms.Resize((img_height,img_width)),
+                                        transforms.ToTensor(),
+                                        
+                                    ])
+                                    )
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
 test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test2'),
                                      transforms.Compose([
-                                        
+                                        remove_bg,
                                         transforms.Resize((img_height,img_width)),
                                         transforms.ToTensor(),
                                         
@@ -42,8 +65,10 @@ print(test_dataset.imgs[5])
 batch_size = 1
 print(test_dataset.classes)
 
+
 # ['39', '620', 'aoli', 'eber', 'fengshi', 'kouzhao', 'kushen', 'lianhua', 'ningjiao', 'nut', 'shangtong', 'yikang', 'zhuangyao', 'zhuodu']
-classes = test_dataset.classes
+test_classes = test_dataset.classes
+train_classes = train_dataset.classes
 
 import torch.nn as nn
 import torch.nn.functional as F
@@ -69,8 +94,8 @@ def imshow(img):
 
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './pkg_iden2.pth')
-
+PATH = os.path.join(file_dir, './pkg_iden.pth')
+error_path = os.path.join(file_dir, 'data',"test2_errors")
 net = PkgIdenNet()
 net.load_state_dict(torch.load(PATH))
 
@@ -92,10 +117,10 @@ with torch.no_grad():
 
     for i in range(len(test_dataset)):
         data = test_dataset[i]
-        images, labels = data
+        img, labels = data
 
         # 将tensor变成一个单元素数组
-        images = torch.stack([images])
+        images = torch.stack([img])
         # 将整数变成一个单元素数组
         labels = torch.tensor([labels])
         # calculate outputs by running images through the network
@@ -108,8 +133,8 @@ with torch.no_grad():
         # 时间为0.05秒
         print('程序运行时间为: %s Seconds'%(end-start))
         
-        # print(outputs.shape) 
-        # print(outputs)
+        print(outputs.shape) 
+        print(outputs)
         # 将数据转为0到1之间的概率，总和为1
         softmax = nn.Softmax(dim=1)
 
@@ -125,31 +150,58 @@ with torch.no_grad():
         # _里面放的是概率，如果能预测，则概率>0.99
         # 如果不能预测，则概率是0.6779
         # print(_)
-        # print(predicted.shape)
-        # print(predicted)
-        print('Predicted: ', classes[predicted[0]])
+        print(predicted.shape)
+        print(predicted)
+        print('Predicted: ', predicted[0])
+        real_lable_text = test_classes[labels[0]]
+        pred_lable_text = train_classes[predicted[0]]
 
-        if _[0]>0.9 and predicted[0] == labels[0]:
+        if _[0]>0.9 and real_lable_text == pred_lable_text:
             correct += 1
             fn = test_dataset.imgs[i]
             print("ok", fn)
             print("index", i)
             print("rate",_[0])
-            print("should be", labels[0])
-            print("but it is", predicted[0])
+            print("\n")
             images = torchvision.utils.make_grid(images)
-            imshow(images)
+            # imshow(images)
         else:
 
-            # fn = test_dataset.imgs[i]
-            # print("error", fn)
-            # print("index", i)
-            # print("rate",_[0])
-            # print("should be", labels[0])
-            # print("but it is", predicted[0])
-            # images = torchvision.utils.make_grid(images)
+            fn = test_dataset.imgs[i]
+            print("error", fn)
+            print("index", i)
+            print("rate",_[0])
+            print("should be", real_lable_text)
+            print("but it is", pred_lable_text)
+            print("\n")
+            images = torchvision.utils.make_grid(images)
             # imshow(images)
-            pass
+
+            # 保存到硬盘上
+
+            print(img.shape) #[3, 500, 500]
+            arr = np.asarray(img) 
+            print(arr.shape)
+            arr = np.transpose(arr, (1, 2, 0))
+            print(arr.shape)
+            print(arr[10][10])
+
+            # arr里面放的小数
+            arr255 = arr*255
+            # 类型一定要正确
+            arr255 = arr255.astype(np.uint8)
+            print(arr255[10][10])
+
+            rimg = Image.fromarray(arr255,mode="RGB")
+            print(type(fn))
+            p = rimg.getpixel((10, 10))
+            print(p)
+            temp_arr = os.path.split(fn[0])
+            file_name = temp_arr[len(temp_arr)-1]
+            cat_dir = os.path.join(error_path,real_lable_text)
+            if not os.path.exists(cat_dir):
+                os.makedirs(cat_dir)
+            rimg.save(os.path.join(cat_dir, file_name))
         total += 1
 
 

@@ -1,13 +1,13 @@
 # 训练
 # 识别药品包装，数据在data目录下
-from PkgIdenNet import d_print,PkgIdenNet,img_width,img_height
+from PkgIdenNetC5 import d_print,PkgIdenNet,img_width,img_height
 import torch
 import torchvision
 import torchvision.transforms as transforms
 import os
 from torch.utils.data import Dataset
 from torchvision import datasets, models, transforms
-
+import time
 
 file_dir = os.path.split(__file__)[0]
 print(file_dir)
@@ -23,21 +23,31 @@ train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
                                     ])
                                     )
 
-trainloader = torch.utils.data.DataLoader(train_dataset, batch_size = 1, shuffle = False, num_workers=0)
+trainloader = torch.utils.data.DataLoader(train_dataset, batch_size = 5, shuffle = False, num_workers=0)
 print(train_dataset.classes)
 
 
 import torch.nn as nn
 
-
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+# Assuming that we are on a CUDA machine, this should print a CUDA device:
+print(device)
 net = PkgIdenNet()
 
+PATH = os.path.join(file_dir, './pkg_iden.pth')
+if os.path.exists(PATH):
+    net.load_state_dict(torch.load(PATH))
+
+net = net.to(device)
 import torch.optim as optim
+
+
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-for epoch in range(160):  # loop over the dataset multiple times
+start=time.time()
+for epoch in range(20):  # loop over the dataset multiple times
 
     running_loss = 0.0
     total = 0
@@ -45,6 +55,8 @@ for epoch in range(160):  # loop over the dataset multiple times
         total +=1
         # get the inputs; data is a list of [inputs, labels]
         inputs, labels = data
+        inputs = inputs.to(device)
+        labels = labels.to(device)
         d_print(inputs.shape) # torch.Size([1, 3, 600, 800])
         d_print(labels.shape) # torch.Size([1])
         # label是个数字
@@ -65,13 +77,16 @@ for epoch in range(160):  # loop over the dataset multiple times
 
         # print statistics
         running_loss += loss.item()
-    if epoch % 20 == 19:    # print every 2000 mini-batches
-        print(f'[{epoch + 1}, {epoch + 1:5d}] loss: {running_loss / total:.3f}')
+       
+    print(f'[{epoch + 1}, {epoch + 1:5d}] loss: {running_loss / total:.3f}')
 
+end=time.time()
+# 760秒
+print('程序运行时间为: %s Seconds'%(end-start))
 print('Finished Training')
 print(train_dataset.classes)
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
-PATH = os.path.join(file_dir, './pkg_iden.pth')
+
 
 torch.save(net.state_dict(), PATH)

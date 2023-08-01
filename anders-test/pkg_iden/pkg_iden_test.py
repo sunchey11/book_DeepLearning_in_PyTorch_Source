@@ -7,7 +7,7 @@ import torchvision
 import torchvision.transforms as transforms
 import os
 from torchvision import datasets, models, transforms
-from PkgIdenNet import d_print,PkgIdenNet,img_width,img_height
+from PkgIdenNetC5 import d_print,PkgIdenNet,img_width,img_height
 
 file_dir = os.path.split(__file__)[0]
 print(file_dir)

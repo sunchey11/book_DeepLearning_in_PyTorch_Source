@@ -1,4 +1,4 @@
-# 显示目录下的图片,transform是个函数
+# 显示目录下的图片,transform是个函数，用于分析transform参数的输入与输出
 import torch
 from torch.utils.data import Dataset
 
