@@ -100,7 +100,7 @@ ENV/
 
 # mypy
 .mypy_cache/
-anders-test/basics/model_weights.pth
+
 dataset/data_5_10000.npy
 dataset/labels_5_10000.npy
 anders-test/PyTorch_CRNN_Seq2Seq/dataset/data_5_10000.npy
@@ -173,14 +173,11 @@ anders-test/pkg_iden/data/test2/ningjiao/z7.jpg
 anders-test/pkg_iden/data/test2/ningjiao/z8.jpg
 anders-test/pkg_iden/data/test2/ningjiao/z9.jpg
 anders-test/pkg_iden/data/test2_unknow/z15.jpg
-anders-test/pkg_iden/font_iden.pth
-anders-test/pkg_iden/font_iden_gbk.pth
-anders-test/pkg_iden/font_iden_gbk_1.pth
-anders-test/pkg_iden/font_iden_3755.pth
 anders-test/pkg_iden/data/test2_errors
 anders-test/pkg_iden/data/test/
-anders-test/pkg_iden/pkg_iden.pth
+
 anders-test/pkg_iden/data/test3_errors
 anders-test/pkg_iden/debug_dir
+
 *.pth
-*.pth
+anders-test/my-transforms-study/outputs/

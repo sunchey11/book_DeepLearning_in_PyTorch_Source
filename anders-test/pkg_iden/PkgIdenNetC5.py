@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 img_width = 800
 img_height = 600
-debug = True
+debug = False
 def d_print(s):
     if(debug):
         print(s)
@@ -41,7 +41,7 @@ class PkgIdenNet(nn.Module):
         self.bn6 = nn.BatchNorm2d(512)
         self.pool6 = nn.MaxPool2d(pool_size, pool_size, padding=1)
 
-        self.fc1 = nn.Linear(64512, 10000)
+        self.fc1 = nn.Linear(78848, 10000)
 
     def forward(self, x):
         d_print(x.shape) # torch.Size([1, 3, 600, 800])

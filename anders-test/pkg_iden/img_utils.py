@@ -3,7 +3,10 @@ from PIL import Image
 import numpy as np
 import os
 
+
 def save_tensor_to_img(img:Tensor,dir,filename):
+    if True:
+        return
     print(img.shape) #[3, 500, 500]
     arr = np.asarray(img) 
     print(arr.shape)

@@ -7,9 +7,9 @@ import torch
 from torch import Tensor
 
 def rotate90(img):
-    print(img.size)
+    # print(img.size)
     img =  rotate(img,90,expand=True)
-    print(img.size)
+    # print(img.size)
     return img
 def dummy(img):
     return img
@@ -46,16 +46,16 @@ class MainBodyGetter():
         )
 
         org_img = img
-        print(type(img))
+        # print(type(img))
         for i in range(len(com_list)):
             t = com_list[i]
             img = t(img)
-            print(type(img))
-            dir = os.path.join(self.debug_dir,"main"+str(i))
-            if not os.path.exists(dir):
-                os.makedirs(dir)
-            filename = str(self.c)+".jpg"
-            img.save(os.path.join(dir,filename))
+            # print(type(img))
+            # dir = os.path.join(self.debug_dir,"main"+str(i))
+            # if not os.path.exists(dir):
+            #     os.makedirs(dir)
+            # filename = str(self.c)+".jpg"
+            # img.save(os.path.join(dir,filename))
         return img
     
 class ChangeShape():
@@ -86,18 +86,15 @@ class ChangeShape():
         # 3.转270度
         for i in range(len(com_list)):
             t = com_list[i]
-            print(type(img_tensor))
+            # print(type(img_tensor))
             img = t(img_tensor)
-            print(type(img))
-            img_list.append(img)
+            # print(type(img))
+            img_list.append(torch.stack([img]))
 
             # save tensor to imgfile
             dir = os.path.join(self.debug_dir,str(i))
             save_tensor_to_img(img, dir, str(self.c)+".jpg")
-
-        r = torch.stack(img_list)
-        print(r.shape)
-        return r
+        return img_list
     # 将图片调整为指定大小
     def align(self,img:Tensor,width_to,height_to):
         bottom_pad = height_to - img.shape[1]
@@ -105,3 +102,5 @@ class ChangeShape():
         # https://pytorch.org/vision/stable/generated/torchvision.transforms.Pad.html
         pad = transforms.Pad((0, 0, right_pad, bottom_pad))
         return pad
+    
+

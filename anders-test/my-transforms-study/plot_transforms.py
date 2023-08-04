@@ -172,9 +172,9 @@ def plot(imgs, with_orig=True, row_title=None, **imshow_kwargs):
 # (see also :func:`~torchvision.transforms.functional.elastic_transform`)
 # Randomly transforms the morphology of objects in images and produces a
 # see-through-water-like effect.
-elastic_transformer = T.ElasticTransform(alpha=250.0)
-transformed_imgs = [elastic_transformer(orig_img) for _ in range(2)]
-plot(transformed_imgs)
+# elastic_transformer = T.ElasticTransform(alpha=250.0)
+# transformed_imgs = [elastic_transformer(orig_img) for _ in range(2)]
+# plot(transformed_imgs)
 
 ####################################
 # RandomCrop

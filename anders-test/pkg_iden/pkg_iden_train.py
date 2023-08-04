@@ -54,7 +54,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 start=time.time()
 
 
-for epoch in range(1):  # loop over the dataset multiple times
+for epoch in range(50):  # loop over the dataset multiple times
     cs = ChangeShape(img_height+pad_width*2, img_width+pad_width*2, debug_dir)
     running_loss = 0.0
     total = 0
@@ -67,30 +67,29 @@ for epoch in range(1):  # loop over the dataset multiple times
         # inputs里面只有一个元素,是一个图片对应的tensor
         img = inputs[0]
         imgs = cs.change(img)
+        for i in range(len(imgs)):
+            inputs = imgs[i]
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            
+            # label是个数字
+            d_print(type(labels[0]))
+            d_print(labels[0].item())
+            # zero the parameter gradients
+            optimizer.zero_grad()
 
-        
-        
-        inputs = inputs.to(device)
-        labels = labels.to(device)
-        
-        # label是个数字
-        d_print(type(labels[0]))
-        d_print(labels[0].item())
-        # zero the parameter gradients
-        optimizer.zero_grad()
+            # forward + backward + optimize
+            outputs = net(inputs)
+            d_print(outputs.shape) # torch.Size([4, 10])
+            d_print(labels.shape) # torch.Size([4])
+            d_print(outputs) 
+            d_print(labels) 
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
 
-        # forward + backward + optimize
-        outputs = net(inputs)
-        d_print(outputs.shape) # torch.Size([4, 10])
-        d_print(labels.shape) # torch.Size([4])
-        d_print(outputs) 
-        d_print(labels) 
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        # print statistics
-        running_loss += loss.item()
+            # print statistics
+            running_loss += loss.item()
        
     print(f'[{epoch + 1}, {epoch + 1:5d}] loss: {running_loss / total:.6f}')
 

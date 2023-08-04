@@ -1,5 +1,6 @@
 # 原文
 # https://pytorch.org/vision/stable/auto_examples/plot_scripted_tensor_transforms.html
+# https://github.com/pytorch/vision/tree/main/gallery
 # 从这个记事本拷贝出来的例子
 # anders-test/vision-examples-gallery/plot_scripted_tensor_transforms.ipynb
 # 演示图像识别两只狗的品种
