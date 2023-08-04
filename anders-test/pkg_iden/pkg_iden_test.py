@@ -30,7 +30,6 @@ print(t1[1]) #这是一个整数，即label的index
 print(type(test_dataset.imgs))
 print(len(test_dataset.imgs))
 print(type(test_dataset.imgs[0]))
-print(test_dataset.imgs[5])
 
 
 batch_size = 1

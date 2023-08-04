@@ -39,9 +39,9 @@ train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
                                     ])
                                     )
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
-test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test2'),
+test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test'),
                                      transforms.Compose([
-                                        remove_bg,
+                                        # remove_bg,
                                         transforms.Resize((img_height,img_width)),
                                         transforms.ToTensor(),
                                         
@@ -57,7 +57,6 @@ print(t1[1]) #这是一个整数，即label的index
 print(type(test_dataset.imgs))
 print(len(test_dataset.imgs))
 print(type(test_dataset.imgs[0]))
-print(test_dataset.imgs[5])
 
 
 
@@ -95,7 +94,7 @@ def imshow(img):
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
 PATH = os.path.join(file_dir, './pkg_iden.pth')
-error_path = os.path.join(file_dir, 'data',"test2_errors")
+error_path = os.path.join(file_dir, 'data',"test3_errors")
 net = PkgIdenNet()
 net.load_state_dict(torch.load(PATH))
 
