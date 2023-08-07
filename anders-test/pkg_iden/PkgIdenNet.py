@@ -1,15 +1,10 @@
 # 识别药品包装的类
 
+from img_utils import d_print
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-img_width = 800
-img_height = 600
-debug = False
-def d_print(s):
-    if(debug):
-        print(s)
 class PkgIdenNet(nn.Module):
     def __init__(self):
         super().__init__()
@@ -24,7 +19,7 @@ class PkgIdenNet(nn.Module):
         # 这里调整大小
         # self.fc1 = nn.Linear(16 * 5 * 5, 120)
         # 16*24*32=12280
-        self.fc1 = nn.Linear(16*24*32, 1228)
+        self.fc1 = nn.Linear(9408, 1228)
         self.fc1_x = nn.Linear(1228, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 20)

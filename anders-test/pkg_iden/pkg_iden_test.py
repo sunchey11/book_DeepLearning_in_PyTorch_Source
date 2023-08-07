@@ -7,34 +7,33 @@ import torchvision
 import torchvision.transforms as transforms
 import os
 from torchvision import datasets, models, transforms
-from PkgIdenNetC5 import d_print,PkgIdenNet,img_width,img_height
+from PkgIdenNetC5 import d_print,PkgIdenNet
+import torchvision.transforms as transforms
+from img_utils import image_transforms
 
 file_dir = os.path.split(__file__)[0]
-print(file_dir)
+# print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
 test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test'),
-                                     transforms.Compose([
-                                        transforms.Resize((img_height,img_width)),
-                                        transforms.ToTensor(),
-                                    ])
+                                     image_transforms["test"]
                                     )
 t1 = test_dataset[0]
 
-print(len(t1))
-print(t1[0]) #这是图片数据
-print(t1[1]) #这是一个整数，即label的index
+# print(len(t1))
+# print(t1[0]) #这是图片数据
+# print(t1[1]) #这是一个整数，即label的index
 
 # 所有的文件
-print(type(test_dataset.imgs))
-print(len(test_dataset.imgs))
-print(type(test_dataset.imgs[0]))
+# print(type(test_dataset.imgs))
+# print(len(test_dataset.imgs))
+# print(type(test_dataset.imgs[0]))
 
 
 batch_size = 1
 testloader = torch.utils.data.DataLoader(test_dataset, batch_size = batch_size, shuffle = False, num_workers=0)
-print(test_dataset.classes)
+# print(test_dataset.classes)
 
 # ['39', '620', 'aoli', 'eber', 'fengshi', 'kouzhao', 'kushen', 'lianhua', 'ningjiao', 'nut', 'shangtong', 'yikang', 'zhuangyao', 'zhuodu']
 classes = test_dataset.classes
@@ -53,9 +52,9 @@ import numpy as np
 def imshow(img):
     # img = img / 2 + 0.5     # unnormalize
     npimg = img.numpy()
-    print(npimg.shape)
+    # print(npimg.shape)
     npimg = np.transpose(npimg, (1, 2, 0))
-    print(npimg.shape)
+    # print(npimg.shape)
     plt.imshow(npimg)
     plt.show()
 
@@ -119,6 +118,8 @@ with torch.no_grad():
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
+        # print('total:',total)
+        # print('correct:',correct)
 
 print(f'Accuracy of the network on the 10000 test images: {100 * correct // total} %')
 

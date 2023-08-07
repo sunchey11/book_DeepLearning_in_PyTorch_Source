@@ -13,6 +13,9 @@ def rotate90(img):
     return img
 def dummy(img):
     return img
+"""此类用来做图片预处理，即在训练前，将图片变化生成多个图片
+   此类会将图片横向放置，然后增加边框，然后缩放到指定大小
+"""
 class MainBodyGetter():
     def __init__(self,height,width,pad_width, debug_dir):
         self.height = height
@@ -57,7 +60,9 @@ class MainBodyGetter():
             # filename = str(self.c)+".jpg"
             # img.save(os.path.join(dir,filename))
         return img
-    
+"""
+在训练时，对图片做变换
+"""
 class ChangeShape():
     
     def __init__(self,height,width, debug_dir):

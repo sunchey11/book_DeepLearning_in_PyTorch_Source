@@ -20,7 +20,6 @@ import numpy as np
 import torch
 import torchvision.transforms as T
 import os
-import torchvision.transforms as transforms
 
 file_dir = os.path.split(os.path.abspath(__file__))[0]
 assets_path = os.path.join(file_dir, 'assets')
@@ -75,7 +74,7 @@ def randomResizedCrop():
     resized_crops = [resize_cropper(orig_img) for _ in range(4)]
     plot(resized_crops,"randomResizedCrop")
 
-randomResizedCrop()
+# randomResizedCrop()
 
 def randomRotation():
     ####################################
@@ -100,35 +99,38 @@ def randomHorizontalFlip():
     plot(transformed_imgs, "randomHorizontalFlip")
 # randomHorizontalFlip()
 
+def randomPerspective():
+    # RandomPerspective
+    # ~~~~~~~~~~~~~~~~~
+    # The :class:`~torchvision.transforms.RandomPerspective` transform
+    # (see also :func:`~torchvision.transforms.functional.perspective`)
+    # performs random perspective transform on an image.
+    # p为被变化的概率（0到1），默认为0.5
+    # fill为空白处的颜色
+    # distortion_scale ，变化程度。0：没变化，1：扭曲的不成样子，0.2稍稍变化
+    perspective_transformer = T.RandomPerspective(distortion_scale=0.6, p=0.3,fill =(255,0,0))
+    perspective_imgs = [perspective_transformer(orig_img) for _ in range(4)]
+    plot(perspective_imgs, "randomPerspective")
 
+# randomPerspective()
 
-# 看看人家的，都是这样搞得
-# https://learnopencv.com/image-classification-using-transfer-learning-in-pytorch/
-image_transforms = { 
-    'train': transforms.Compose([
-        # scale参数我不知道啥意思，截取面积与原面积的比值：（最小值，最大值）
-        transforms.RandomResizedCrop(size=256, scale=(0.8, 1.0)),
-        # degree为+15 ,-15
-        transforms.RandomRotation(degrees=15),
-        # 随机就两种情况，翻转和不翻转
-        transforms.RandomHorizontalFlip(),
-        transforms.CenterCrop(size=224),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406],
-                             [0.229, 0.224, 0.225])
-    ]),
-    'valid': transforms.Compose([
-        transforms.Resize(size=256),
-        transforms.CenterCrop(size=224),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406],
-                             [0.229, 0.224, 0.225])
-    ]),
-    'test': transforms.Compose([
-        transforms.Resize(size=256),
-        transforms.CenterCrop(size=224),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406],
-                             [0.229, 0.224, 0.225])
-    ])
-}
+def colorJitter():
+    # ColorJitter
+    # ~~~~~~~~~~~
+    # The :class:`~torchvision.transforms.ColorJitter` transform
+    # randomly changes the brightness, saturation, and other properties of an image.
+    # brightness:亮度，0为全黑，0.5为半黑，1为不变，5已经非常亮，看不清了
+    # contrast:对比度，0为看不见,0.5灰蒙蒙，1为不变，2对比很强烈，有点失真了
+    # saturation：饱和度,0为纯黑白,0.5颜色淡，灰蒙蒙，1不变，2颜色鲜艳
+    # hue:颜色 -0.5 <= min <= max <= 0.5
+    # -0.5很奇诡的颜色，脸变蓝了
+    # -0.2脸变红，衣服变绿
+    # -0.1有点正常了
+    # 0不变
+    # 0.2脸变绿
+    # 0.5很不正常的颜色
+    jitter = T.ColorJitter(brightness=(0.8,1.2), contrast = (0.8,1.2),saturation = (0.8,1.2), hue=(0,0))
+    # jitter = T.ColorJitter(brightness=.5, hue=.3)
+    jitted_imgs = [jitter(orig_img) for _ in range(40)]
+    plot(jitted_imgs,"colorJitter")
+colorJitter()

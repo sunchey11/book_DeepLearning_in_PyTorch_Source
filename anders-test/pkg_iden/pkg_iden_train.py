@@ -1,7 +1,7 @@
 # 训练
 # 识别药品包装，数据在data目录下
 from MyTrans import MainBodyGetter,ChangeShape
-from PkgIdenNetC5 import d_print,PkgIdenNet,img_width,img_height
+from PkgIdenNetC5 import PkgIdenNet
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -9,25 +9,20 @@ import os
 from torch.utils.data import Dataset
 from torchvision import datasets, models, transforms
 import time
+from img_utils import image_transforms,d_print
 
 file_dir = os.path.split(__file__)[0]
 print(file_dir)
 data_path = os.path.join(file_dir, "./data")
 debug_dir = os.path.join(file_dir, "./debug_dir")
 pad_width = 2
-ts = MainBodyGetter(img_height, img_width,pad_width, debug_dir)
-def mytrans(img):
-    img = ts.transformImg(img)
-    return img
+
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
 train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
-                                     transforms.Compose([
-                                        mytrans,
-                                        transforms.ToTensor(),
-                                    ])
+                                    image_transforms["train"]
                                     )
 
-trainloader = torch.utils.data.DataLoader(train_dataset, batch_size = 1, shuffle = False, num_workers=0)
+trainloader = torch.utils.data.DataLoader(train_dataset, batch_size = 10, shuffle = False, num_workers=0)
 print(train_dataset.classes)
 print(len(train_dataset))
 
@@ -40,8 +35,8 @@ print(device)
 net = PkgIdenNet()
 
 PATH = os.path.join(file_dir, './pkg_iden.pth')
-# if os.path.exists(PATH):
-#     net.load_state_dict(torch.load(PATH))
+if os.path.exists(PATH):
+    net.load_state_dict(torch.load(PATH))
 
 net = net.to(device)
 import torch.optim as optim
@@ -54,8 +49,8 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 start=time.time()
 
 
-for epoch in range(50):  # loop over the dataset multiple times
-    cs = ChangeShape(img_height+pad_width*2, img_width+pad_width*2, debug_dir)
+for epoch in range(300):  # loop over the dataset multiple times
+    
     running_loss = 0.0
     total = 0
     for i, data in enumerate(trainloader, 0):
@@ -64,32 +59,28 @@ for epoch in range(50):  # loop over the dataset multiple times
         inputs, labels = data
         d_print(inputs.shape) # torch.Size([1, 3, 600, 800])
         d_print(labels.shape) # torch.Size([1])
-        # inputs里面只有一个元素,是一个图片对应的tensor
-        img = inputs[0]
-        imgs = cs.change(img)
-        for i in range(len(imgs)):
-            inputs = imgs[i]
-            inputs = inputs.to(device)
-            labels = labels.to(device)
-            
-            # label是个数字
-            d_print(type(labels[0]))
-            d_print(labels[0].item())
-            # zero the parameter gradients
-            optimizer.zero_grad()
+        
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+        
+        # label是个数字
+        d_print(type(labels[0]))
+        d_print(labels[0].item())
+        # zero the parameter gradients
+        optimizer.zero_grad()
 
-            # forward + backward + optimize
-            outputs = net(inputs)
-            d_print(outputs.shape) # torch.Size([4, 10])
-            d_print(labels.shape) # torch.Size([4])
-            d_print(outputs) 
-            d_print(labels) 
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
+        # forward + backward + optimize
+        outputs = net(inputs)
+        d_print(outputs.shape) # torch.Size([4, 10])
+        d_print(labels.shape) # torch.Size([4])
+        d_print(outputs) 
+        d_print(labels) 
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
 
-            # print statistics
-            running_loss += loss.item()
+        # print statistics
+        running_loss += loss.item()
        
     print(f'[{epoch + 1}, {epoch + 1:5d}] loss: {running_loss / total:.6f}')
 
