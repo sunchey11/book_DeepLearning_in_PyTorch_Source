@@ -49,7 +49,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 start=time.time()
 
 
-for epoch in range(300):  # loop over the dataset multiple times
+for epoch in range(50):  # loop over the dataset multiple times
     
     running_loss = 0.0
     total = 0

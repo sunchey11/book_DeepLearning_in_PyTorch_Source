@@ -38,7 +38,9 @@ class PkgIdenNet(nn.Module):
         self.bn6 = nn.BatchNorm2d(512)
         self.pool6 = nn.MaxPool2d(pool_size, pool_size, padding=1)
 
-        self.fc1 = nn.Linear(61440, 10000)
+        self.fc1 = nn.Linear(61440, 6000)
+        self.fc2 = nn.Linear(6000, 500)
+        self.fc3 = nn.Linear(500, 20)
 
     def forward(self, x):
         d_print(x.shape) # torch.Size([1, 3, 600, 800])
@@ -117,6 +119,15 @@ class PkgIdenNet(nn.Module):
 
         x = self.fc1(x)
         d_print(x.shape) # torch.Size([4, 1228])
+        x = F.relu(x)
+        d_print(x.shape) # torch.Size([4, 120])
+
+        x = self.fc2(x)
+        d_print(x.shape) # torch.Size([4, 84])
+        x = F.relu(x)
+        d_print(x.shape) # torch.Size([4, 84])
+        x = self.fc3(x) # torch.Size([4, 10])
+        d_print(x.shape)
         
        
         return x

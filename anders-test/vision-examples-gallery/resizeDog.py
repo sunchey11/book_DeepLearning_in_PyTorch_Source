@@ -2,7 +2,8 @@
 # https://pytorch.org/vision/stable/auto_examples/plot_scripted_tensor_transforms.html
 # 从这个记事本拷贝出来的例子
 # anders-test/vision-examples-gallery/plot_scripted_tensor_transforms.ipynb
-# 演示图像识别两只狗的品种
+# 这个例子学习如何显示图片，如何resize，关于resize更详细的信息，在另一个记事本中
+# anders-test/my-transforms-study/my-transforms-study.ipynb
 from pathlib import Path
 import json
 import matplotlib.pyplot as plt
@@ -26,11 +27,12 @@ dog2_path = os.path.join(file_dir, "assets/2ants.jpg")
 def show(imgs):
     fix, axs = plt.subplots(ncols=len(imgs), squeeze=False)
     for i, img in enumerate(imgs):
+        # 将tensor转为Image对象
         img = T.ToPILImage()(img.to('cpu'))
         axs[0, i].imshow(np.asarray(img))
         axs[0, i].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])
 dog1 = read_image(dog1_path)
-print(type(dog1))
+print(type(dog1)) #  <class 'torch.Tensor'>
 print(dog1.shape) #[3, 500, 500]
 
 show([dog1])
