@@ -102,6 +102,7 @@ print(net)
 # 读取最后线性层的输入单元数，这是前面各层卷积提取到的特征数量
 num_ftrs = net.fc.in_features
 
+print(type(net.fc)) # <class 'torch.nn.modules.linear.Linear'>
 # 重新定义一个全新的线性层，它的输出为2，原本是1000
 net.fc = nn.Linear(num_ftrs, 2)
 
