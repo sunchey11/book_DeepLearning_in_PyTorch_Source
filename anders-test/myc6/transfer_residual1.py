@@ -13,6 +13,11 @@ import time
 import copy
 import os
 
+debug = True    
+def d_print(s):
+    if(debug):
+        print(s)
+
 # 从硬盘文件夹中加载图像数据集
 
 # 数据存储总路径
@@ -25,6 +30,8 @@ image_size = 224
 # 1. 随机从原始图像中切下来一块224*224大小的区域
 # 2. 随机水平翻转图像
 # 3. 将图像的色彩数值标准化
+# Normalize的说明，可以看下面的笔记
+# http://localhost:8888/lab/tree/anders-test/my-transforms-study/my-transforms-study.ipynb
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
 train_dataset = datasets.ImageFolder(os.path.join(data_path, 'train'),
                                     transforms.Compose([
@@ -85,6 +92,17 @@ def imshow(inp, title=None):
 #获取第一个图像batch和标签
 images, labels = next(iter(train_loader))
 
+x=10
+y=10
+img1 = images[0]
+# x，y点对应的值，是标准化后的值，范围是-2.xx到+2.xx之间
+print(img1[:,x,y]) # tensor([1.1872, 0.8354, 1.7163])
+# 通过下面的代码，将值变为0，1之间
+mean = np.array([0.485, 0.456, 0.406])
+std = np.array([0.229, 0.224, 0.225])
+print(img1[:,x,y]*std+mean) #tensor([0.6078, 0.6510, 0.1176], dtype=torch.float64)
+
+
 # 将这个batch中的图像制成表格绘制出来
 out = torchvision.utils.make_grid(images)
 
@@ -131,19 +149,37 @@ best_model = net
 best_r = 0.0
 for epoch in range(num_epochs):
     #optimizer = exp_lr_scheduler(optimizer, epoch)
-    train_rights = [] #记录训练数据集准确率的容器
+
+    # 记录训练数据集准确率的容器
+    # 里面的每个元素是一个2元素元组，表示一批数据预测结果
+    # 元组第0个元素为预测正确的数量
+    # 元组第1个元素为总预测数量
+    train_rights = [] 
     train_losses = []
     for batch_idx, (data, target) in enumerate(train_loader):  #针对容器中的每一个批进行循环
         data, target = data.clone().detach().requires_grad_(True), target.clone().detach() #data为图像，target为标签
+        # 数据有4条，每条代表一个图片
+        d_print(data.shape)  # torch.Size([4, 3, 224, 224])
+        # 数据有4条，每条代表一个lable index
+        d_print(target.shape) # torch.Size([4])
+        
         #如果存在GPU则将变量加载到GPU中
         if use_cuda:
             data, target = data.cuda(), target.cuda()
         output = net(data) #完成一次预测
+        # 预测结果
+        d_print(output.shape) # torch.Size([4, 2])
         loss = criterion(output, target) #计算误差
         optimizer.zero_grad() #清空梯度
         loss.backward() #反向传播
         optimizer.step() #一步随机梯度下降
-        right = rightness(output, target) #计算准确率所需数值，返回正确的数值为（正确样例数，总样本数）
+
+        #计算准确率所需数值，返回正确的数值为（正确样例数，总样本数）
+        right = rightness(output, target) 
+        # 第0个元素为预测正确的数量
+        print(right[0])
+        # 第1个元素为总预测数量
+        print(right[1])
         train_rights.append(right) #将计算结果装到列表容器中
         loss = loss.cpu() if use_cuda else loss
         train_losses.append(loss.data.numpy())
@@ -157,6 +193,10 @@ for epoch in range(num_epochs):
     net.eval() #标志模型当前为运行阶段
     test_loss = 0
     correct = 0
+    # 记录训练数据集准确率的容器，跟上面的train_rights一样
+    # 里面的每个元素是一个2元素元组，表示一批数据预测结果
+    # 元组第0个元素为预测正确的数量
+    # 元组第1个元素为总预测数量
     vals = []
     #对测试数据集进行循环
     for data, target in val_loader:
@@ -172,6 +212,8 @@ for epoch in range(num_epochs):
     val_r = (sum([tup[0] for tup in vals]), sum([tup[1] for tup in vals]))
     val_ratio = 1.0*val_r[0].numpy()/val_r[1]
     
+    # 把正确率最好的一次的模型记下来
+    # 模型不是越来越好的？而是有随机性？
     if val_ratio > best_r:
         best_r = val_ratio
         best_model = copy.deepcopy(net)
@@ -181,6 +223,8 @@ for epoch in range(num_epochs):
     record.append([np.mean(train_losses), train_r[0].numpy() / train_r[1], val_r[0].numpy()/val_r[1]])
 
 # 打印误差率曲线
+# record里面放的是每一个epoch，得到的loss,训练的正确率，val的正确率
+
 x = [x[0] for x in record]
 y = [1 - x[1] for x in record]
 z = [1 - x[2] for x in record]
@@ -194,6 +238,7 @@ plt.show()
 
 
 # 将预训练的模型用于测试数据，打印其分类效果
+# 显示前6个图片，并打印预测结果
 def visualize_model(model, num_images=6):
     images_so_far = 0
     fig = plt.figure(figsize=(15,10))

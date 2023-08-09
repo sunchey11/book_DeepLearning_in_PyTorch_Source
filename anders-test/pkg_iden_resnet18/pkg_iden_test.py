@@ -14,6 +14,8 @@ file_dir = os.path.split(__file__)[0]
 data_path = os.path.join(file_dir, "../pkg_iden/data")
 # 图像的大小为224*224
 image_size = 224
+# Normalize的说明，可以看下面的笔记
+# http://localhost:8888/lab/tree/anders-test/my-transforms-study/my-transforms-study.ipynb
 # https://pytorch.org/vision/stable/generated/torchvision.datasets.ImageFolder.html
 test_dataset = datasets.ImageFolder(os.path.join(data_path, 'test'),
                                      transforms.Compose([
