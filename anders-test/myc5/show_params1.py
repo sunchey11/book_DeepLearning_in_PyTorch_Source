@@ -32,6 +32,7 @@ class ConvNet(nn.Module):
         self.pool = nn.MaxPool2d(2, 2) 
         #第二层卷积，输入通道为depth[0]=4, 
         #输出通道为depth[1]=8，窗口为5，padding为2
+        # depth[0]=4
         self.conv2 = nn.Conv2d(depth[0], depth[1], 5, padding = 2) 
         #一个线性连接层，输入尺寸为最后一层立方体的平铺，输出层512个节点
         # 最后一层立方体为8层，大小为7*7，为392。
@@ -109,13 +110,28 @@ test_dataset = dsets.MNIST(root='D:\\pytorch_data\\mnist\\data',
                            train=False, 
                            transform=transforms.ToTensor())
 
-idx=0
+idx=26
 #提取第一层卷积层的卷积核,这段代码显示的图片，看不出啥
-# plt.figure(figsize = (10, 7))
-# for i in range(4):
-#     plt.subplot(1,4,i + 1)
-#     plt.axis('off')
-#     plt.imshow(net.conv1.weight.data.numpy()[i,0,...]) #提取第一层卷积核中的权重值，注意conv1是net的属性
+plt.figure(figsize = (10, 7))
+for i in range(4):
+    plt.subplot(1,4,i + 1)
+    plt.axis('off')
+    plt.imshow(net.conv1.weight.data.numpy()[i,0,...]) #提取第一层卷积核中的权重值，注意conv1是net的属性
+plt.show()
+
+# 看一下conv1的结构,weight里面有4个卷积核，所以有4条数据，这4条数据是5*5的大小
+print(net.conv1.weight.shape) # torch.Size([4, 1, 5, 5])
+# 看看第一个卷积核是啥样子：在-1和+1之间的小数
+print(net.conv1.weight[0])
+print(net.conv1.bias.shape)  # torch.Size([4])
+# 卷积核的bias是啥，做什么用的。
+print(net.conv1.bias)  # [-0.0150,  0.0204, -0.0081,  0.0123]
+print("oooook")
+
+
+
+
+
 
 
 # 调用net的retrieve_features方法可以抽取出输入当前数据后输出的所有特征图（第一个和第二个卷积层）
@@ -125,14 +141,27 @@ idx=0
 # 其次unsqueeze的作用是在最前面添加一维
 # 目的是让这个input_x的tensor是四维的，这样才能输入给net。补充的那一维表示batch
 input_x = test_dataset[idx][0].unsqueeze(0)
+# test_dataset[idx][0]里面放的是图片
+# test_dataset[idx][1]里面放的是label index
 print(test_dataset[idx][1])
+# 1张图片，图片有1个通道
+print(input_x.shape) #torch.Size([1, 1, 28, 28])
 # feature_maps是有两个元素的列表，分别表示第一层和第二层卷积的所有特征图
-feature_maps = net.retrieve_features(input_x)
+(feature_map1, feature_map2) = net.retrieve_features(input_x)
+# 变成4个通道，因为有4个卷积核
+print(feature_map1.shape) # torch.Size([1, 4, 28, 28])
 
 plt.figure(figsize = (10, 7))
 
 # 打印出4个特征图
 for i in range(4):
     plt.subplot(1,4,i + 1)
-    plt.imshow(feature_maps[0][0, i,...].data.numpy())
+
+    d = feature_map1[0, i,...]
+    # d和d2是一样的
+    d2 = feature_map1[0, i]
+    print(type(d))
+    print(d.shape) #torch.Size([28, 28])
+    plt.imshow(d.data.numpy())
 plt.show()
+print("finished")

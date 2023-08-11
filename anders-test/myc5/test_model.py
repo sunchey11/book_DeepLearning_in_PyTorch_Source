@@ -1,3 +1,7 @@
+# 测试模型的识别能力
+# 1.加载模型digit_model_all.pth
+# 2.显示前两个图形，7和2的图片
+# 3.识别这两个图形，并print出结果，完全正确。
 import torch
 import torchvision.models as models
 import torch
@@ -113,6 +117,9 @@ idx = 0
 muteimg = test_dataset[idx][0].numpy()
 muteimg1 = test_dataset[idx+1][0].numpy()
 plt.imshow(muteimg[0,...])
+plt.show()
+plt.imshow(muteimg1[0,...])
+plt.show()
 # plt.imshow(muteimg1[0,...])
 print(test_dataset[idx][0].shape)
 print('标签是：',test_dataset[idx][1])

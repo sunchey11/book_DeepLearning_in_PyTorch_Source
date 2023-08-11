@@ -1,4 +1,4 @@
-# 蚂蚁还是蜜蜂
+# 蚂蚁还是蜜蜂，包含训练程序
 # D:\GitHub\book_DeepLearning_in_PyTorch_Source\06_Transfer Learning\蚂蚁还是蜜蜂_Transfer_residual.ipynb
 #加载程序所需要的包
 import torch

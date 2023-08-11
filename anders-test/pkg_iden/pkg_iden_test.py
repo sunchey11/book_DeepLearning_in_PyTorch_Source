@@ -77,6 +77,36 @@ PATH = os.path.join(file_dir, './pkg_iden.pth')
 net = PkgIdenNet()
 net.load_state_dict(torch.load(PATH))
 
+def showConv(conv):
+    # 看一下conv的结构
+    # conv1:torch.Size([64, 3, 3, 3])
+    # conv2:torch.Size([128, 64, 3, 3])
+    # conv3:torch.Size([256, 128, 3, 3])
+    # conv4:torch.Size([512, 256, 3, 3])
+    # conv5:torch.Size([512, 512, 3, 3])
+    # conv6:torch.Size([512, 512, 3, 3])
+    print(conv.weight.shape)
+    # 看看第一个卷积核是啥样子：在-1和+1之间的小数
+    print(conv.weight[0])
+    # conv1: torch.Size([64])
+    # conv2:torch.Size([128])
+    # conv3:torch.Size([256])
+    # conv4:torch.Size([512])
+    # conv5:torch.Size([512])
+    # conv6:torch.Size([512])
+    print(conv.bias.shape)  
+    # 卷积核的bias是啥，做什么用的。
+    print(conv.bias)  
+    
+showConv(net.conv1)
+showConv(net.conv2)
+showConv(net.conv3)
+showConv(net.conv4)
+showConv(net.conv5)
+showConv(net.conv6)
+
+print("oooook")
+
 outputs = net(images)
 print(outputs.shape) # torch.Size([4, 10])
 print(outputs)

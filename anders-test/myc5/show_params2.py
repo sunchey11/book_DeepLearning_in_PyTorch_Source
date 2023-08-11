@@ -32,6 +32,7 @@ class ConvNet(nn.Module):
         self.pool = nn.MaxPool2d(2, 2) 
         #第二层卷积，输入通道为depth[0]=4, 
         #输出通道为depth[1]=8，窗口为5，padding为2
+        # depth[0]=4
         self.conv2 = nn.Conv2d(depth[0], depth[1], 5, padding = 2) 
         #一个线性连接层，输入尺寸为最后一层立方体的平铺，输出层512个节点
         # 最后一层立方体为8层，大小为7*7，为392。
@@ -103,6 +104,32 @@ data_path = os.path.join(file_dir, "digit_model_all.pth")
 # 第二种文件，直接读
 net = torch.load(data_path)
 net.eval()
+
+
+# 看一下conv2的结构,weight里面有8个卷积核，所以有8条数据
+print(net.conv2.weight.shape) # torch.Size([8, 4, 5, 5])
+# 看看第一个卷积核是啥样子：在-1和+1之间的小数
+print(net.conv2.weight[0])
+print(net.conv2.bias.shape)  # torch.Size([8])
+# 卷积核的bias是啥，做什么用的。
+print(net.conv2.bias)  # [-0.0150,  0.0204, -0.0081,  0.0123]
+print("oooook")
+
+# 关于conv的结构，这里有更详细的数据，
+# anders-test\pkg_iden\pkg_iden_test.py
+# 6个卷积层，每一层的数据的规律为
+# weight.shape=[本层输出数目out，本层输入数目in（前一层的输出层数），窗口高，窗口宽]
+# 这个结构是如何做到的输入层数in，转换成输出层数out的。有多少个卷积核？
+# 答案：
+# 设想1：想象整个输出为一棵树，前一层分出来in个分支
+#   每一个分支又分出来out个分支，那么就有in*out个分支了，
+#   但是对于下一层，应该只有out个分支。所以此设想不对。
+# 设想2：卷积核是立体的，每一层有out个卷积核，每个卷积核有in层。
+#    这out个立体的卷积核，跟前面传入的in条数据运算，就会得到out条数据
+#    这是不是有点像全连接层中的hidden神经元
+#    一个矩阵,shape = out:in,乘以in条数据得到,out条数据
+# 设想2应该是正确的
+
 #随便从测试集中读入一张图片，并检验模型的分类结果，并绘制出来
 # 加载测试数据集
 test_dataset = dsets.MNIST(root='D:\\pytorch_data\\mnist\\data', 
@@ -110,16 +137,16 @@ test_dataset = dsets.MNIST(root='D:\\pytorch_data\\mnist\\data',
                            transform=transforms.ToTensor())
 
 # 0的数字是7
-idx=0
+idx=26
 #这段代码显示的图片，看不出啥
 # 绘制第二层的卷积核，每一列对应一个卷积核，一共8个卷积核
-# plt.figure(figsize = (15, 10))
-# for i in range(4):
-#     for j in range(8):
-#         plt.subplot(4, 8, i * 8 + j + 1)
-#         plt.axis('off')
-#         plt.imshow(net.conv2.weight.data.numpy()[j, i,...])
-        
+plt.figure(figsize = (15, 10))
+for i in range(4):
+    for j in range(8):
+        plt.subplot(4, 8, i * 8 + j + 1)
+        plt.axis('off')
+        plt.imshow(net.conv2.weight.data.numpy()[j, i,...])
+plt.show()     
 
 # 其次unsqueeze的作用是在最前面添加一维
 # 目的是让这个input_x的tensor是四维的，这样才能输入给net。补充的那一维表示batch
@@ -129,12 +156,13 @@ print(test_dataset[idx][1])
 feature_maps = net.retrieve_features(input_x)
 
 # feature_maps是有两个元素的列表，分别表示第一层和第二层卷积的所有特征图
-feature_maps = net.retrieve_features(input_x)
+(feature_map1, feature_map2) = net.retrieve_features(input_x)
+
 # 绘制第二层的特征图，一共八个
 plt.figure(figsize = (10, 7))
 for i in range(8):
     plt.subplot(2,4,i + 1)
     plt.axis('off')
-    plt.imshow(feature_maps[1][0, i,...].data.numpy())
+    plt.imshow(feature_map2[0, i,...].data.numpy())
 plt.show()
 print('finished')

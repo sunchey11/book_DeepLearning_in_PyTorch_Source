@@ -11,11 +11,14 @@ import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-
+debug = False    
+def d_print(s):
+    if(debug):
+        print(s)
 # 定义超参数 
 image_size = 28  #图像的总尺寸28*28
 num_classes = 10  #标签的种类数
-num_epochs = 2  #训练的总循环周期
+num_epochs = 20  #训练的总循环周期
 batch_size = 64  #一个撮（批次）的大小，64张图片
 
 # 加载MINIST数据，如果没有下载过，就会在当前路径下新建/data子目录，并把文件存放其中
@@ -198,7 +201,7 @@ for epoch in range(num_epochs):
         #这种区分主要是为了打开关闭net的training标志，从而决定是否运行dropout
         net.train() 
                     
-        print(data.shape)
+        d_print(data.shape)
         output = net(data) #神经网络完成一次前馈的计算过程，得到预测输出output
         # print(output.shape) #[64,10]
         # output里面放的是每个图片对应的数组，数组10个元素，值为数字（不是概率）
@@ -233,7 +236,7 @@ for epoch in range(num_epochs):
             #val_r为一个二元组，分别记录校验集中分类正确的数量和该集合中总的样本数
             val_r = (sum([tup[0] for tup in val_rights]), sum([tup[1] for tup in val_rights]))
             #打印准确率等数值，其中正确率为本训练周期Epoch开始后到目前撮的正确率的平均值
-            print(val_r)
+            d_print(val_r)
             print('训练周期: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}\t训练正确率: {:.2f}%\t校验正确率: {:.2f}%'.format(
                 epoch, batch_idx * batch_size, len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), 
@@ -266,7 +269,7 @@ vals = [] #记录准确率所用列表
 for data, target in test_loader:
     data, target = data.clone().detach().requires_grad_(True), target.clone().detach()
     output = net(data) #将特征数据喂入网络，得到分类的输出
-    print(output)
+    # print(output)
     val = rightness(output, target) #获得正确样本数以及总样本数
     vals.append(val) #记录结果
 
