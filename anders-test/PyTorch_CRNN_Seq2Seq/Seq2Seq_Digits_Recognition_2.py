@@ -1,5 +1,6 @@
 # https://codingvision.net/pytorch-crnn-seq2seq-digits-recognition-ctc
 # https://colab.research.google.com/drive/1ZS8Mk7v75O9baOxfexKS5s-Ykafv1nWf#scrollTo=sXSjoltzYTV0
+# 创建dataset loader,显示10张图片
 #@title Dataset Generator
 #@markdown Generates **random sequences** of equal length using digits from the **EMNIST** dataset while also performing basic augmentation.
 #@markdown Saves results in **dataset/** directory: *data_\<seq_len\>_\<num_seq\>.npy* (images) and *labels_\<seq_len\>_\<num_seq\>.npy* (labels/GTs).
@@ -16,15 +17,23 @@ import torch.utils.data as data_utils
 import numpy as np
 import torch
 
-data_path = './dataset/data_5_10000.npy'
-labels_path = './dataset/labels_5_10000.npy'
+debug = True
+def d_print(s):
+    if(debug):
+        print(s)
+
+file_dir = os.path.split(os.path.abspath(__file__))[0]
+dataset_path = os.path.join(file_dir, 'dataset')
+
+data_path = os.path.join(dataset_path, 'data_5_10000.npy')
+labels_path = os.path.join(dataset_path, 'labels_5_10000.npy')
 
 data = np.load(data_path)
-print(type(data))
+d_print(type(data))
 data = torch.Tensor(data)
-print(data.shape)  #[10000,28,140]
+d_print(data.shape)  #[10000,28,140]
 labels = torch.IntTensor(np.load(labels_path).astype(int))
-print(labels.shape)  #[10000,5]
+d_print(labels.shape)  #[10000,5]
 seq_dataset = data_utils.TensorDataset(data, labels)
 train_set, test_set = torch.utils.data.random_split(seq_dataset, [int(len(seq_dataset)*0.8), int(len(seq_dataset)*0.2)])
 
@@ -46,7 +55,7 @@ for batch_id, (x_test, y_test) in enumerate(train_loader):
     plt.imshow(x_test[j], cmap='gray')
     plt.show()
 
-    print(y_test[j])
+    d_print(y_test[j])
     number_of_printed_imgs -= 1
 
     if number_of_printed_imgs <= 0:
