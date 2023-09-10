@@ -2,7 +2,7 @@ from rembg import remove
 import cv2
 import os
 import time
-
+# https://github.com/danielgatis/rembg/blob/main/USAGE.md
 input_path = 'r4.jpg'
 output_path = 'r4-output.png'
 

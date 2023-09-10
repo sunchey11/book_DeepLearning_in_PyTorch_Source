@@ -1,5 +1,5 @@
 # Input and output as a PIL image
-
+# https://github.com/danielgatis/rembg/blob/main/USAGE.md
 from rembg import remove,new_session
 from PIL import Image
 import os
