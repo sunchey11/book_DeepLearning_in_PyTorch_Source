@@ -184,3 +184,4 @@ anders-test/my-transforms-study/outputs/
 anders-test/PyTorch_CRNN_Seq2Seq/dataset/imgs/
 anders-test/PyTorch_CRNN_Seq2Seq/datasetdata_5_10000.npy
 anders-test/PyTorch_CRNN_Seq2Seq/datasetlabels_5_10000.npy
+anders-test/huggingface/transformers/quicktour/pt_save_pretrained/
