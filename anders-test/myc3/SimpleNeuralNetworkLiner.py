@@ -33,6 +33,9 @@ fields_to_drop = []
 quant_features = ['x','y']
 target_fields = ['y']
 nn:SimpleNeuralNetworkLiner = SimpleNeuralNetworkLiner(rides,dummy_fields,fields_to_drop,quant_features,target_fields,150)
+print(type(nn) == SimpleNeuralNetworkLiner)
+print(type(nn).__base__)
+
 nn.prepareData()
 nn.train()
 # nn.showLosses()
