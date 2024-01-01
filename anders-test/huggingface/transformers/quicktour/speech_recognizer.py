@@ -1,3 +1,7 @@
+
+# 必须装soundfile librosa，否则报错ImportError: To support decoding audio files, please install 'librosa' and 'soundfile'.
+# pip install soundfile librosa
+
 import torch
 from transformers import pipeline
 
