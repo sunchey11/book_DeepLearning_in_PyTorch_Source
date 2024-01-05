@@ -22,14 +22,14 @@ model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-unc
 showParentClass(type(model))
 inputs = tokenizer("Hello, my dog is cute", return_tensors="pt")
 print(type(inputs)) #<class 'transformers.tokenization_utils_base.BatchEncoding'>
-
 with torch.no_grad():
     model_result = model(**inputs)
     logits = model_result.logits
 print(type(logits))
+print(logits.shape)
+
 predicted_class_id = logits.argmax().item()
 print(predicted_class_id)
 print(model.config.id2label)
-# 结果是{0: 'LABEL_0', 1: 'LABEL_1'}，好像不对
 label = model.config.id2label[predicted_class_id]
 print(label)

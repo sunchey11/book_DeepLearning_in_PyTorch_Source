@@ -1,11 +1,20 @@
-from transformers import AutoTokenizer,pipeline
+from transformers import AutoTokenizer,pipeline,AutoConfig,AutoModel
+def showParentClass(clazz):
+    """显示父类"""
+    indent = ''
+    p = clazz
+    print(clazz)
+    while hasattr(p, '__base__'):
+        p = p.__base__
+        indent += '  '
+        print(indent+'|__'+ str(p))
 
 model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 encoding = tokenizer("We are very happy to show you the 🤗 Transformers library.")
 print(encoding)
-# 第二部分
+# 第二部分:可以接收数组，可以padding和truncation，保证有同样的长度
 pt_batch = tokenizer(
     ["We are very happy to show you the 🤗 Transformers library.", 
      "We hope you don't hate it."],
@@ -17,9 +26,13 @@ pt_batch = tokenizer(
 
 from transformers import AutoModelForSequenceClassification
 
-model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
 pt_model = AutoModelForSequenceClassification.from_pretrained(model_name)
+showParentClass(type(pt_model))
+# 在automode的文档里，找到了这段代码。但是得到的这个model不知道怎么用
+config = AutoConfig.from_pretrained(model_name)
+pt_model2 = AutoModel.from_config(config)
 
+showParentClass(type(pt_model2))
 classifier = pipeline(model=model_name)
 print(classifier.model.name_or_path)
 print(classifier.task)
