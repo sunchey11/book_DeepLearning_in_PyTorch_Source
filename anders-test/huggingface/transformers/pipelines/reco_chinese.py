@@ -18,10 +18,12 @@ def showParentClass(clazz):
         print(indent+'|__'+ str(p))
 
 generator = pipeline(model="openai/whisper-large-v2")
+# generator = pipeline(model="openai/whisper-large-v3")
 print(generator.model.name_or_path) #openai/whisper-large-v2
 print(generator.task)
 print(showParentClass(type(generator.model))) 
 # r = generator("https://huggingface.co/datasets/Narsil/asr_dummy/resolve/main/mlk.flac")
 # r = generator(abs_path("./mlk.flac"))
-r = generator(abs_path("./cc.wav"),generate_kwargs  = {"task":"transcribe", "language":"chinese"})
+r = generator(abs_path("./cc.wav"),
+              generate_kwargs  = {"task":"transcribe", "language":"chinese"})
 print(r)
