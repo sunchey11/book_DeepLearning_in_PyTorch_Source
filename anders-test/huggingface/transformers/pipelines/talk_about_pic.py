@@ -4,7 +4,7 @@ def abs_path(name):
     file_dir = os.path.split(os.path.abspath(__file__))[0]
     imgpath = os.path.join(file_dir, name)
     return imgpath
-
+# 看图问答
 vqa = pipeline(model="impira/layoutlm-document-qa")
 # vqa = pipeline(model="microsoft/layoutlm-base-cased")
 
