@@ -1,5 +1,6 @@
 from transformers import pipeline
 import os
+# 使用图像识别的程序，来识别一只猫
 def abs_path(name):
     file_dir = os.path.split(os.path.abspath(__file__))[0]
     imgpath = os.path.join(file_dir, name)
