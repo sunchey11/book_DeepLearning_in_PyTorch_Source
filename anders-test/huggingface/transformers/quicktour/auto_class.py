@@ -1,4 +1,4 @@
-from transformers import AutoTokenizer,pipeline,AutoConfig,AutoModel
+from transformers import AutoTokenizer,pipeline,AutoConfig,AutoModel,AutoProcessor
 def showParentClass(clazz):
     """显示父类"""
     indent = ''
@@ -11,6 +11,10 @@ def showParentClass(clazz):
 
 model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
+# AutoProcessor和AutoTokenizer的效果是一样的，如果记不住该用哪个类，就用AutoProcessor吧
+tokenizer2 = AutoProcessor.from_pretrained(model_name)
+showParentClass(type(tokenizer))
+showParentClass(type(tokenizer2))
 
 encoding = tokenizer("We are very happy to show you the 🤗 Transformers library.")
 print(encoding)
