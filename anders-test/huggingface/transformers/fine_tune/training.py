@@ -55,3 +55,4 @@ trainer = Trainer(
 print('start')
 trainer.train()
 print('finished')
+# 1:11:02<00:00
